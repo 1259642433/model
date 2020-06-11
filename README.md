@@ -1,7 +1,7 @@
-# vue-init
+# model
 
 #### 介绍
-vue初始模板
+基于threejs实现的模型展示
 
 ## Project setup
 ```
