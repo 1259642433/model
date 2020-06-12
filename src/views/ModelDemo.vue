@@ -7,12 +7,15 @@
 
 <script>
 import * as THREE from 'three'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
-import { TGALoader } from 'three/examples/jsm/loaders/TGALoader'
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+// import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+// import { TGALoader } from 'three/examples/jsm/loaders/TGALoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 export default {
   data () {
     return {
+      // scene: '',
       mixers: [], // 动画数据
       skeleton: '' // 骨骼
     }
@@ -28,7 +31,7 @@ export default {
       this.initRenderer(container)
       this.initPlane()
       this.initlight()
-      // this.initContent()
+      this.initContent()
       this.loaderModel()
       this.initControls(container)
       this.render()
@@ -51,6 +54,8 @@ export default {
       const skyboxMesh = new THREE.Mesh(skyboxGeometry, skyboxMaterials)
       skyboxMesh.name = 'skyboxMesh'
       this.scene.add(skyboxMesh)
+      var axes = new THREE.AxesHelper(40)
+      this.scene.add(axes)
     },
     initCamera (el) {
       this.camera = new THREE.PerspectiveCamera(60, el.clientWidth / el.clientHeight, 1, 1100)
@@ -71,14 +76,22 @@ export default {
       //     color: 0xF4F4F4,
       //     wireframe: true
       //   })
-
       var material = new THREE.MeshLambertMaterial({ color: 0x1adae7 })
       this.mesh = new THREE.Mesh(geometry, material)
       this.mesh.position.set(0, 0, 0)
       this.scene.add(this.mesh)
     },
     initPlane () {
-
+      var planeGeometry = new THREE.PlaneGeometry(40, 20)
+      // var planeMaterial = new THREE.MeshBasicMaterial({color:0xcccccc});
+      var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff })// 转换对光源有渲染的材质
+      var plane = new THREE.Mesh(planeGeometry, planeMaterial)
+      plane.rotation.x = -0.5 * Math.PI
+      plane.position.x = 15
+      plane.position.y = 0
+      plane.position.x = 0
+      this.scene.add(plane)
+      plane.receiveShadow = true
     },
     initlight () {
       // 添加环境光与平行光
@@ -103,6 +116,31 @@ export default {
     //   this.scene.add(direLight)
     },
     loaderModel () {
+      console.log(MTLLoader)
+      console.log(OBJLoader)
+      var onProgress = function (xhr) {
+        if (xhr.lengthComputable) {
+          var percentComplete = xhr.loaded / xhr.total * 100
+          console.log(Math.round(percentComplete, 2) + '% 已经加载')
+        }
+      }
+      var onError = function (xhr) {}
+      var mtlLoader = new MTLLoader()
+      mtlLoader.setPath('')
+      mtlLoader.load(require('@a/models/obj/显微镜.mtl'), function (materials) {
+        materials.preload()
+        // objLoader.setPath('')  r
+        var objLoader = new OBJLoader()
+        objLoader.setMaterials(materials)
+        objLoader.load(require('@a/models/obj/显微镜.obj'), function (object) {
+          object.position.y = 0
+          object.rotation.y = 0.5
+          object.scale.set(0.05, 0.05, 0.05)
+          this.scene.add(object)
+        }.bind(this), onProgress, onError)
+      }.bind(this))
+
+      // fbx
       //   var tga_loader = new TGALoader()
       //   var material = new THREE.MeshPhongMaterial({
       //     map: tga_loader.load('./models/mooncake/Diffuse.tga'),
@@ -110,28 +148,28 @@ export default {
       //     specularMap: tga_loader.load('./models/mooncake/S.tga'),
       //     bumpMap: tga_loader.load('./models/mooncake/Bump.tga')
       //   })
-      var manager = new THREE.LoadingManager()
-      var loader = new FBXLoader(manager)
-      loader.load('/models/水草_01.FBX', function (object) {
-        console.log(object)
-        object.scale.multiplyScalar(0.1)
-        object.mixer = new THREE.AnimationMixer(object)// 获取对象的动画
-        this.mixers.push(object.mixer)
-        if (object.animations[0]) {
-          var action = object.mixer.clipAction(object.animations[0])
-          action.play()
-          object.traverse(function (child) {
-            if (child.isMesh) {
-              child.castShadow = true
-              child.receiveShadow = true
-            }
-          })
-          object.scale.set(0.5, 0.5, 0.5)
-          // 骨骼显示助手
-          this.skeleton = new THREE.SkeletonHelper(object)
-          this.scene.add(object, this.skeleton)
-        }
-      }.bind(this))
+      // var manager = new THREE.LoadingManager()
+      // var loader = new FBXLoader(manager)
+      // loader.load('/models/水草_01.FBX', function (object) {
+      //   console.log(object)
+      //   object.scale.multiplyScalar(0.1)
+      //   object.mixer = new THREE.AnimationMixer(object)// 获取对象的动画
+      //   this.mixers.push(object.mixer)
+      //   if (object.animations[0]) {
+      //     var action = object.mixer.clipAction(object.animations[0])
+      //     action.play()
+      //     object.traverse(function (child) {
+      //       if (child.isMesh) {
+      //         child.castShadow = true
+      //         child.receiveShadow = true
+      //       }
+      //     })
+      //     object.scale.set(0.5, 0.5, 0.5)
+      //     // 骨骼显示助手
+      //     this.skeleton = new THREE.SkeletonHelper(object)
+      //     this.scene.add(object, this.skeleton)
+      //   }
+      // }.bind(this))
     },
     initControls (el) {
       this.controls = new OrbitControls(this.camera, el)
@@ -140,8 +178,10 @@ export default {
       this.controls.dampingFactor = 0.03
     },
     render () {
-      requestAnimationFrame(this.render)
+      // var clock = new THREE.Clock()
+      // var delta = clock.getDelta()
       this.controls.update()
+      requestAnimationFrame(this.render)
       this.renderer.render(this.scene, this.camera)
     }
   }
