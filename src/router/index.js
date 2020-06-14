@@ -24,9 +24,9 @@ const routes = [
     component: () => import('../views/ModelDemo')
   },
   {
-    path: '/sea',
-    name: 'Sea',
-    component: () => import('../views/Sea')
+    path: '/3d',
+    name: 'Vue3DModel',
+    component: () => import('../views/Vue3DModel')
   }
 ]
 

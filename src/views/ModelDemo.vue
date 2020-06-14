@@ -31,7 +31,7 @@ export default {
       this.initRenderer(container)
       this.initPlane()
       this.initlight()
-      this.initContent()
+      // this.initContent()
       this.loaderModel()
       this.initControls(container)
       this.render()
@@ -59,30 +59,17 @@ export default {
     },
     initCamera (el) {
       this.camera = new THREE.PerspectiveCamera(60, el.clientWidth / el.clientHeight, 1, 1100)
-      this.camera.position.set(0, 0, 100)
+      this.camera.position.set(0, 50, 50)
     },
     initRenderer (el) {
       this.renderer = new THREE.WebGLRenderer()
       this.renderer.setSize(el.offsetWidth, el.offsetHeight)
       this.renderer.setClearColor(0xffffff, 1)
+      this.renderer.shadowMap.enabled = true
       el.appendChild(this.renderer.domElement)
     },
-    initContent () {
-      var geometry = new THREE.SphereBufferGeometry(20, 90, 90)
-      //   var texture = new THREE.Texture()
-      //   texture.minFilter = THREE.LinearFilter
-      //   texture.format = THREE.RGBFormat
-      //   var material = new THREE.MeshLambertMaterial({ // 创建材料
-      //     color: 0xF4F4F4,
-      //     wireframe: true
-      //   })
-      var material = new THREE.MeshLambertMaterial({ color: 0x1adae7 })
-      this.mesh = new THREE.Mesh(geometry, material)
-      this.mesh.position.set(0, 0, 0)
-      this.scene.add(this.mesh)
-    },
     initPlane () {
-      var planeGeometry = new THREE.PlaneGeometry(40, 20)
+      var planeGeometry = new THREE.PlaneGeometry(100, 100)
       // var planeMaterial = new THREE.MeshBasicMaterial({color:0xcccccc});
       var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff })// 转换对光源有渲染的材质
       var plane = new THREE.Mesh(planeGeometry, planeMaterial)
@@ -90,8 +77,8 @@ export default {
       plane.position.x = 15
       plane.position.y = 0
       plane.position.x = 0
-      this.scene.add(plane)
       plane.receiveShadow = true
+      this.scene.add(plane)
     },
     initlight () {
       // 添加环境光与平行光
@@ -103,21 +90,54 @@ export default {
       spotLight.decay = 2 // 衰减系数，反比
       spotLight.distance = 800 // 发光距离
       spotLight.castShadow = true // 阴影
-      spotLight.shadow.mapSize.width = 1024
-      spotLight.shadow.mapSize.height = 1024
+      spotLight.shadow.mapSize.width = 1920
+      spotLight.shadow.mapSize.height = 1080
       spotLight.shadow.camera.near = 10 // 近截面
-      spotLight.shadow.camera.far = 250
+      spotLight.shadow.camera.far = 900
       this.scene.add(spotLight)
-      const ambiLight = new THREE.AmbientLight(0x999999)
+      const ambiLight = new THREE.AmbientLight(0x888888)
+      console.log(ambiLight)
       this.scene.add(ambiLight)
-
     //   const direLight = new THREE.DirectionalLight(0xffffff, 1.0) // 平行光 DirectionalLight (光源颜色的RGB数值, 光源强度数值)
     //   direLight.position.set(500, 500, 500)
     //   this.scene.add(direLight)
     },
+    initContent () {
+      const r = 20
+      var geometry = new THREE.SphereBufferGeometry(r, 90, 90)
+      //   var texture = new THREE.Texture()
+      //   texture.minFilter = THREE.LinearFilter
+      //   texture.format = THREE.RGBFormat
+      //   var material = new THREE.MeshLambertMaterial({ // 创建材料
+      //     color: 0xF4F4F4,
+      //     wireframe: true
+      //   })
+      var material = new THREE.MeshLambertMaterial({ color: 0x1adae7 })
+      this.mesh = new THREE.Mesh(geometry, material)
+      this.mesh.position.set(0, r, 0)
+      this.mesh.castShadow = true
+      this.scene.add(this.mesh)
+    },
     loaderModel () {
-      console.log(MTLLoader)
-      console.log(OBJLoader)
+      var mtlLoader = new MTLLoader()
+      var objLoader = new OBJLoader()
+      mtlLoader.setPath('models/obj/')
+      objLoader.setPath('models/obj/')
+      mtlLoader.load('显微镜.mtl', function (materials) {
+        materials.preload()
+        objLoader.setMaterials(materials)
+        objLoader.load('显微镜.obj', function (object) {
+          object.position.y = 0
+          object.rotation.y = 0
+          object.scale.set(5, 5, 5)
+          object.castShadow = true
+          for (const i in object.children) {
+            object.children[i].castShadow = true
+            object.children[i].receiveShadow = true
+          }
+          this.scene.add(object)
+        }.bind(this), onProgress, onError)
+      }.bind(this))
       var onProgress = function (xhr) {
         if (xhr.lengthComputable) {
           var percentComplete = xhr.loaded / xhr.total * 100
@@ -125,21 +145,6 @@ export default {
         }
       }
       var onError = function (xhr) {}
-      var mtlLoader = new MTLLoader()
-      mtlLoader.setPath('')
-      mtlLoader.load(require('@a/models/obj/显微镜.mtl'), function (materials) {
-        materials.preload()
-        // objLoader.setPath('')  r
-        var objLoader = new OBJLoader()
-        objLoader.setMaterials(materials)
-        objLoader.load(require('@a/models/obj/显微镜.obj'), function (object) {
-          object.position.y = 0
-          object.rotation.y = 0.5
-          object.scale.set(0.05, 0.05, 0.05)
-          this.scene.add(object)
-        }.bind(this), onProgress, onError)
-      }.bind(this))
-
       // fbx
       //   var tga_loader = new TGALoader()
       //   var material = new THREE.MeshPhongMaterial({
@@ -181,6 +186,7 @@ export default {
       // var clock = new THREE.Clock()
       // var delta = clock.getDelta()
       this.controls.update()
+      this.camera.lookAt(0, 0, 0)
       requestAnimationFrame(this.render)
       this.renderer.render(this.scene, this.camera)
     }
