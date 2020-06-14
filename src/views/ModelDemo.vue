@@ -70,11 +70,10 @@ export default {
     },
     initPlane () {
       var planeGeometry = new THREE.PlaneGeometry(100, 100)
-      // var planeMaterial = new THREE.MeshBasicMaterial({color:0xcccccc});
       var planeMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff })// 转换对光源有渲染的材质
       var plane = new THREE.Mesh(planeGeometry, planeMaterial)
       plane.rotation.x = -0.5 * Math.PI
-      plane.position.x = 15
+      plane.position.x = 0
       plane.position.y = 0
       plane.position.x = 0
       plane.receiveShadow = true
@@ -90,8 +89,8 @@ export default {
       spotLight.decay = 2 // 衰减系数，反比
       spotLight.distance = 800 // 发光距离
       spotLight.castShadow = true // 阴影
-      spotLight.shadow.mapSize.width = 1920
-      spotLight.shadow.mapSize.height = 1080
+      spotLight.shadow.mapSize.width = 2560
+      spotLight.shadow.mapSize.height = 1440
       spotLight.shadow.camera.near = 10 // 近截面
       spotLight.shadow.camera.far = 900
       this.scene.add(spotLight)
