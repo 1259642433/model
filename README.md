@@ -1,37 +1,22 @@
 # model
-
-#### 介绍
 基于threejs实现的模型展示
 
-## Project setup
+### 克隆项目
 ```
-npm install
+git clone
 ```
 
-### Compiles and hot-reloads for development
+### 安装依赖
+```
+npm i
+```
+
+### 启动
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+### 编译打包
 ```
 npm run build
 ```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
