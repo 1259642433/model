@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
-import { Color } from 'three'
 
 const mtlLoader = new MTLLoader()
 const objLoader = new OBJLoader()
@@ -33,21 +32,18 @@ export default {
         }, () => {}, onError)
       } else {
         objLoader.load(objPath, object => {
-          console.log(object)
           object.traverse(function (child) {
             if (child instanceof THREE.Mesh) {
-              // 默认写入一些颜色
-              child.material = new THREE.MeshLambertMaterial({ color: 0x777777 })
-              // myMesh.material.map = THREE.ImageUtils.loadTexture('textures/ash_uvgrid01.jpg')
-              // myMesh.material.needsUpdate = true
+              child.material = new THREE.MeshStandardMaterial({ color: modelOpt.color })
             }
           })
-          if (shadow) {
+          if (modelOpt.shadow) {
             for (const i in object.children) {
               object.children[i].castShadow = true
               object.children[i].receiveShadow = true
             }
           }
+
           resolve(object)
         }, onProgress, onError)
       }

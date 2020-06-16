@@ -14,9 +14,13 @@ export default {
     }
     const wait = new Promise((resolve, reject) => {
       stlLoader.load(stlPath, object => {
-        const material = new THREE.MeshStandardMaterial()
+        const material = new THREE.MeshStandardMaterial({ color: modelOpt.color })
         const mesh = new THREE.Mesh(object, material)
         mesh.rotation.x = -Math.PI / 2
+        if (modelOpt.shadow) {
+          mesh.castShadow = true
+          mesh.receiveShadow = true
+        }
         resolve(mesh)
       }, onProgress, onError)
     })

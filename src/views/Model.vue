@@ -1,12 +1,15 @@
 <template>
     <div class="model">
-
+      <model></model>
     </div>
 </template>
 
 <script>
+import model from '../components/Model'
 export default {
-  name: 'Model',
+  components: {
+    model
+  },
   data () {
     return {
 
@@ -16,13 +19,13 @@ export default {
 
   },
   methods: {
-    init () {
 
-    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
+.model{
+  height: 100%;
+}
 </style>
