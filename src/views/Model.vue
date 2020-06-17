@@ -1,6 +1,6 @@
 <template>
     <div class="model">
-      <model></model>
+      <model :option="opt"></model>
     </div>
 </template>
 
@@ -12,7 +12,19 @@ export default {
   },
   data () {
     return {
-
+      opt: {
+        // 目前支持格式,在url中输入模型地址就行了
+        // gltf,
+        // json,
+        // collada,
+        // obj, 此格式如有材质，需带上mtl材质
+        // stl,
+        // ply
+        source: {
+          url: 'https://www.wangwentehappy.tk/assets/models/obj/1.obj',
+          mtl: 'https://www.wangwentehappy.tk/assets/models/obj/1.mtl'
+        }
+      }
     }
   },
   created () {
