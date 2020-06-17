@@ -12,7 +12,6 @@ export default {
     }
     const wait = new Promise((resolve, reject) => {
       jsonLoader.load(stlPath, object => {
-        console.log(object)
         if (modelOpt.shadow) {
           object.castShadow = true
           object.receiveShadow = true
