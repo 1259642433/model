@@ -3,7 +3,7 @@
     <!-- <model-obj src="models/水草_01.FBX"></model-obj> -->
     <div id="model" class="model-container"></div>
     <div class="controls">
-      <!--后续-->
+      <!--控制（预留）-->
       <!-- <div class="light">
         <p>灯光控制</p>
         <div class="main">
@@ -33,9 +33,10 @@ export default {
   },
   data () {
     return {
-      mixers: [], // 动画数据
-      skeleton: '', // 骨骼
-      angel: '' // 灯光角度
+      // TODO 动画（预留）
+      // mixers: [], // 动画数据
+      // skeleton: '', // 骨骼
+      // angel: '' // 灯光角度
     }
   },
   mounted () {
@@ -182,6 +183,7 @@ export default {
     //   this.mesh.castShadow = true
     //   this.scene.add(this.mesh)
     // },
+    // 预留
     // addMouseEvent () {
     //   const lightBar = document.getElementById('bar')
     //   const lightBarBtn = document.getElementById('bar-btn')
