@@ -4,6 +4,7 @@ import collada from './collada'
 import obj from './obj'
 import ply from './ply'
 import stl from './stl'
+import fbx from './fbx'
 
 const utils = {
   keySync: (obj1, obj2) => {
@@ -69,6 +70,11 @@ function loader (source) {
         break
       case 'ply':
         ply.loader(source.url).then(model => {
+          resolve(model)
+        })
+        break
+      case 'fbx':
+        fbx.loader(source.url).then(model => {
           resolve(model)
         })
         break

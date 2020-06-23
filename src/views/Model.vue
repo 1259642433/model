@@ -21,8 +21,8 @@ export default {
         // stl,
         // ply
         source: {
-          url: 'https://www.wangwentehappy.tk/assets/models/obj/1.obj',
-          mtl: 'https://www.wangwentehappy.tk/assets/models/obj/1.mtl'
+          url: 'models/fbx/1.fbx'
+          // mtl: 'https://www.wangwentehappy.tk/assets/models/obj/1.mtl'
         }
       }
     }

@@ -14,6 +14,7 @@ export default {
     const onError = xhr => {
       console.log(xhr, 'model载入出错')
     }
+
     const wait = new Promise((resolve, reject) => {
       if (mtlPath) {
         mtlLoader.load(mtlPath, materials => {
